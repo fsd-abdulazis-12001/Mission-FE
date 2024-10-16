@@ -1,0 +1,1 @@
+di production harusnya saya mengoptimasi size file imagenya agar performa tidak berat,karena tugas ini lebih fokus ke tampilan jadi maaf saya tidak melakukannya,karena lumayan sibuk juga
