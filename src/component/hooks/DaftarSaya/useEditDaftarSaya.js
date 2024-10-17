@@ -5,18 +5,18 @@ import { Notification } from "../../UI/Elements/Notification";
 const useEditDaftarSaya = (endpoint) => {
   
     const mutation = useMutation({
-        mutationFn: async ( {id, imgurl} ) => {
-            console.log("Sending to API:", { id,imgurl});
-            const response = await axiosInstance.patch(`/${endpoint}/${id}`, {"image":imgurl});
+        mutationFn: async ( {id, image} ) => {
+            console.log("Sending to API:", { id,image});
+            const response = await axiosInstance.patch(`/${endpoint}/${id}`, {"image":image});
             return response.data;
         },
       });
-  const editDaftarSaya = (id,imgurl) => {
-    if (!id || !imgurl) {
+  const editDaftarSaya = (id,image) => {
+    if (!id || !image) {
         return Notification("idf or image url not found", "error");
     }
-    console.log(imgurl)
-    const mutationPromise = mutation.mutateAsync({id,imgurl});
+    console.log(image)
+    const mutationPromise = mutation.mutateAsync({id,image});
     Notification("Item edited successfully", "promise", mutationPromise);
   };
 
