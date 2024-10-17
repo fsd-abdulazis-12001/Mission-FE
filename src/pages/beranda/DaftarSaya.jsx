@@ -26,14 +26,14 @@ const DaftarSaya = () => {
     setListDaftarSaya((prevList) => prevList.filter((item) => item.id !== id));
   };
 
-  const handleEdit = async (idf, imgurl) => {
+  const handleEdit = async (id, imgurl) => {
     try {
-      setLoadingId(idf);
-      await editDaftarSaya(idf, imgurl);
+      setLoadingId(id);
+      await editDaftarSaya(id, imgurl);
       setListDaftarSaya((prevList) =>
-        prevList.map((item) => (item.idf === idf ? { ...item, image: imgurl } : item))
+        prevList.map((item) => (item.id === id ? { ...item, image: imgurl } : item))
       );
-      console.log("Edit successful:", idf, imgurl);
+      console.log("Edit successful:", id, imgurl);
     } catch (error) {
       console.error("Failed to edit:", error);
     } finally {

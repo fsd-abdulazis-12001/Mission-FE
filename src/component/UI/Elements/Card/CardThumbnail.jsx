@@ -8,7 +8,7 @@ import DeleteAndAddModal from '../DialogModal/DeleteAndAddModal'
 import EditModal from '../DialogModal/EditModal'
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-const CardThumbnail = ({idf, image, top10, neweps, title,ignore,removeDaftarSaya,editDaftarSaya, loading}) => {
+const CardThumbnail = ({id, image, top10, neweps, title,ignore,removeDaftarSaya,editDaftarSaya, loading}) => {
   
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -34,15 +34,15 @@ const CardThumbnail = ({idf, image, top10, neweps, title,ignore,removeDaftarSaya
   }
   return (
     <>
-        <DeleteAndAddModal openConfirm={openConfirm} onClose={handleCloseConfirm} handleAgreConfirm={() => {removeDaftarSaya(idf) 
+        <DeleteAndAddModal openConfirm={openConfirm} onClose={handleCloseConfirm} handleAgreConfirm={() => {removeDaftarSaya(id) 
           setOpenConfirm(false) }} title={title} image={image} modalTitle={`Hapus ${title} dari Daftar Kamu?`}>
         
         </DeleteAndAddModal>
         <EditModal openConfirm={openEdit} onClose={handleCloseEdit} handleAgreConfirm={(imgur) => {
          
-          editDaftarSaya(idf,imgur) 
+          editDaftarSaya(id,imgur) 
           setOpenEdit(false) 
-          }} title={title} image={image} modalTitle={`Edit ${title} Thumbnail?`} idf>
+          }} title={title} image={image} modalTitle={`Edit ${title} Thumbnail?`} id>
         
         </EditModal>
         <div className='relative group rounded-md w-[95px] h-[143px]  sm:w-[200px] sm:h-[300px] transition-transform duration-300 hover:scale-110 '>
