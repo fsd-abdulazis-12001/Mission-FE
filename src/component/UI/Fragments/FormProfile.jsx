@@ -6,12 +6,15 @@ import Stack from '@mui/material/Stack';
 import ButtonEditPhoto from '../Elements/Button/ButtonEditPhoto';
 import InputProfile from '../Elements/InputProfile';
 import { useState } from 'react';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 const FormProfile = ({height , title}) => {
   const [isPremium, setIsPremium] = useState(false);
-
+  const auth = useAuthUser()
   const toglePremium = () => {
     setIsPremium(!isPremium);
   }
+ 
+  const { email :myEmail, name :myName }= auth
 
   return (
   <div className={`flex justify-center bg-[#181A1C] text-white ${height} py-11`}>
@@ -75,8 +78,8 @@ const FormProfile = ({height , title}) => {
           </Stack>
         </div>
 
-        <InputProfile type="nama" placeholder="Abdul Azis 12001" label="Name Pengguna" />
-        <InputProfile type="email" placeholder="william1980@gmail.com" label="Email" />
+        <InputProfile type="nama" placeholder={myName} label="Name Pengguna" />
+        <InputProfile type="email" placeholder={myEmail} label="Email" />
         <InputProfile type="password" placeholder="********" label="Kata Sandi" />
       </div>
       
