@@ -10,11 +10,14 @@ const useEditDaftarSaya = (endpoint) => {
         mutationFn: async ( {id, image} ) => {
             console.log("Sending to API:", { id,image});
             const response = await axiosInstance.patch(`/${endpoint}/${id}`, {
-              headers: {
-                Authorization: authHeader,
-              },
               "image":image
-            });
+            },
+            {
+              headers: {
+                Authorization: authHeader,  
+              },
+            }
+          );
             return response.data;
         },
       });
