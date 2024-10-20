@@ -22,6 +22,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import AuthGuard from "./component/auth/authGuard";
+import Succes from "./pages/verification/Succes";
 
 const router = createBrowserRouter([
   {
@@ -42,8 +43,13 @@ const router = createBrowserRouter([
   {
     path: "/daftarsaya",
     element: <RequireAuth fallbackPath={"/login"}><DaftarSaya/></RequireAuth>,
+  },
+  {
+    path: "/verify-email",
+    element: <AuthGuard><Succes/></AuthGuard>,
   }
   ,
+  
   {
     path: "/series",
     element: <RequireAuth fallbackPath={"/login"}><Series/></RequireAuth>,

@@ -1,21 +1,86 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useEffect } from 'react'
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import ButtonEditPhoto from '../Elements/Button/ButtonEditPhoto';
+import profilelogo from '../../../assets/img/icon/profile.png';
 import InputProfile from '../Elements/InputProfile';
 import { useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import useAuth from '../../hooks/Auth/useAuth';
+import useCloudinary from '../../hooks/ImageUpload/useCloudynary';
+import isBase64Image from '../../../utils/Base64ImageChecker';
+import { useNavigate } from 'react-router-dom';
+
+
 const FormProfile = ({height , title}) => {
+  const { UploadImage } = useCloudinary();
+  const [uploading, setUploading] = useState(false);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const auth = useAuthUser()
-  const toglePremium = () => {
-    setIsPremium(!isPremium);
-  }
+  
+  const myAuth = useAuth("auth")
+  const { email: myEmail = '', name: myName = '', profileImage = profilelogo } = auth || {};
+  
+  const [name, setName] = useState(myName);
+  const [password, setPassword] = useState("MalasHehe");
+  const [newProfileImage, setNewProfileImage] = useState(profilelogo);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (profileImage && profileImage !== 'nan') {
+      setNewProfileImage(profileImage);
+    }
  
-  const { email :myEmail, name :myName }= auth
+  }, [profileImage,auth]);
+  const handleSave = async () => {
+    const isNameChanged = name !== myName;
+    let imgurl = null
+    if (!isNameChanged && !isBase64Image(newProfileImage)) {
+      console.log('Tidak ada perubahan data...');
+      return;
+    }
+    if (newProfileImage && isBase64Image(newProfileImage)) {
+ 
+     try {
+        setUploading(true);
+        const response = await UploadImage(newProfileImage);
+        console.log('Image uploaded successfully:', response);
+        imgurl = response.url;
+        setUploading(false);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        setUploading(false);
+      } finally {
+        setUploading(false);
+      }
+     
+    }else{
+      console.log('Profile image is not a valid base64 image:', newProfileImage);
+    }
+    
+    try {
+      setUpdatingProfile(true);
+      const response = await myAuth.updateProfile(name, imgurl);
+    
+      // console.log(auth);
+      // console.log(response.user);
+      await myAuth.HandleAuthentication({token: auth.token, user: response.user }, true);
+      navigate('/profile');
+      setUpdatingProfile(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setUpdatingProfile(false);
+    } finally {
+      setUpdatingProfile(false);
+    }
 
+
+   
+    
+  };
   return (
   <div className={`flex justify-center bg-[#181A1C] text-white ${height} py-11`}>
   <div className='flex flex-col w-11/12 gap-5'>
@@ -71,21 +136,40 @@ const FormProfile = ({height , title}) => {
           <Stack direction="row" spacing={2}>
             <Avatar
               alt="Remy Sharp"
-              src="/img/icon/profile.png"
+              src={newProfileImage}
               sx={{ width: 140, height: 140 }}
             />
-            <ButtonEditPhoto togglePremium={toglePremium} />
+            
+            <ButtonEditPhoto setNewProfileImage={setNewProfileImage} />
+          
+           
           </Stack>
         </div>
 
-        <InputProfile type="nama" placeholder={myName} label="Name Pengguna" />
-        <InputProfile type="email" placeholder={myEmail} label="Email" />
-        <InputProfile type="password" placeholder="********" label="Kata Sandi" />
+        <InputProfile
+         type="text"
+         label="Name Pengguna"
+         value={name}
+         onChange={(e) => setName(e.target.value)}
+        />
+
+        <InputProfile
+         type="email"
+         label="Email"
+         value={myEmail}
+         isEditable={false}
+         />
+        <InputProfile 
+          type="password"
+          label="Kata Sandi"
+          value={password}
+          isEditable={false}
+        />
       </div>
       
     </div>
-    <button className="order-last bg-customBlue hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full w-[106px]">
-      Save
+    <button onClick={handleSave} disabled={uploading || updatingProfile} className="order-last bg-customBlue hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full w-[106px]">
+       {uploading || updatingProfile ? 'Loading...' : 'Save'}
     </button>
     
   </div>
